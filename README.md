@@ -28,12 +28,12 @@ B：builtins 内建模块变量，其存储于内置变量命名空间。
 
 ```
 def func():
-	a = b = 1
-	def internal_func(c):
-		if a+b == c:
-			print('True')
-		else:
-			print('False')
+    a = b = 1
+    def internal_func(c):
+	if a+b == c:
+	    print('True')
+	else:
+	    print('False')
 
 test = func()
 test(2)
@@ -405,7 +405,7 @@ print(new.__mro__)  # 查看该类的继承情况
 
 
 
-* @staticmethod 和 @classmethod 的区别
+### 11.@staticmethod 和 @classmethod 的区别
 
   @staticmethod 是为类添加一个静态方法
 
@@ -413,7 +413,7 @@ print(new.__mro__)  # 查看该类的继承情况
 
    
 
-### 11.如何动态添加属性
+### 12.如何动态添加属性
 
 由于 Python 的特性使得程序在运行过程中，我们可以为某个对象添加属性、方法。
 
@@ -462,7 +462,7 @@ print(m.func())
 
 
 
-### 12.对于迭代器和生成器你知道哪些，它们分别应用于什么场景
+### 13.对于迭代器和生成器你知道哪些，它们分别应用于什么场景
 
 先介绍什么是可迭代的`Iterable`：任何可用于`for`循环的都是可迭代的。也可以使用`collection`模块下的`isinstance(obj, Iterable)`来检验该对象是否可迭代。  
 
@@ -608,7 +608,7 @@ hahah
 
 
 
-### 15.说一下进程、线程、以及多任务（多进程、多线程和协程）
+### 14.说一下进程、线程、以及多任务（多进程、多线程和协程）
 
 * 进程
 
