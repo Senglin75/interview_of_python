@@ -1,4 +1,4 @@
-# Python面试
+Python面试
 
 
 
@@ -607,6 +607,12 @@ hahah
 
 
 
+------
+
+**第三次更新**
+
+
+
 ### 14.说一下进程、线程、以及多任务（多进程、多线程和协程）
 
 * 进程
@@ -658,7 +664,431 @@ hahah
     2. multiprocessing.Process
 
        `multiprocessing`模块通过将`fork`方法封装成一个`Process`类，该类有一个`start()`方法，当调用该方法时，会自动调用`run()`方法，开启一个进程。并且由`Process`创建出来的进程，可以使用`join()`方法，使得主进程堵塞，被迫等待子进程。
-
-
+       
+       示例：
+       
+       ```
+       from multiprocessing import Process
+       import os, time
+       
+       
+       print('man_process pid : %d' % os.getpid())
+       
+       class NewProcess(Process):
+           def __init__(self):
+               Process.__init__(self)
+       
+           def run(self):
+               time.sleep(3)
+               print('%d process was runing' % os.getpid())
+       
+       np = NewProcess()
+       np.start()
+       
+       # 结果为
+       man_process pid : 7846
+       7847 process was runing
+       ```
+       
+    
+     3.multiprocessing.Pool
+    
+    ​	multiprocess 下另一种开启进程的方式是通过 Pool 进程池来实现。进程池可以开启多个进程来执行多个任务，但是进程数最大不会超过系统 CPU 核数。同样的，由 Pool 创建出来的进程，主进程也不会等待子进程，通过`join()`方法可以迫使主进程等待子进程，或者使用`apply()`同步的方式。
+    
+    ​	示例：
+    
+    ```
+    from multiprocessing import Pool
+    import time, os, random
+    
+    
+    def run():
+    	# random.random() 随机生成一个介于(0, 1)之间的浮点数
+        time.sleep(random.random())  
+        print('%d process was runing' % os.getpid())
+    
+    # 当任务数量超过当前 Pool 里进程的数量,进程会轮流执行任务，也就意味着后续的任务会被迫等待,等待一个新的进程释放,一旦有进程被释放出来,立马运行.
+    p = Pool(3)
+    
+    for i in range(4):
+        p.apply_async(run, args=())
+    
+    # 关闭进程池，无法再向进程池中添加任务
+    p.close()
+    
+    print('watting for sub_process...')
+    
+    # 堵塞主进程,使其被迫等待子进程完成任务
+    p.join()
+    
+    print('sub_process has done!')
+    
+    # 结果为
+    watting for sub_process...
+    8640 process was runing
+    8639 process was runing
+    8638 process was runing
+    8640 process was runing
+    sub_process has done!
+    ```
+    
+    Pool 中的进程有两种运行方式：
+    
+    * 同步（apply）：
+    
+      ```
+      from multiprocessing import Pool
+      import time, os, random
+      
+      
+      print('main_process pid: %d' % os.getpid())
+      
+      def run():
+          time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+          print('%d process was runing' % os.getpid())
+      
+      p = Pool(3)
+      
+      for i in range(4):
+          p.apply(run, args=())
+      
+      p.close()
+      
+      while True:
+          # 获取 Pool 中剩余的进程数量
+          count = len(p._cache)
+          if count != 0:
+              print('there was %d sub_process' % count)
+          else:
+              break
+              
+      print('sub_process has done')
+      
+      # 结果为
+      main_process pid: 9686
+      9689 process was runing
+      9687 process was runing
+      9688 process was runing
+      9689 process was runing
+      sub_process has done
+      ```
+    
+    * 异步（applay_async):
+    
+      ```
+      from multiprocessing import Pool
+	    import time, os, random
+	    
+	    
+	    print('main_process pid: %d' % os.getpid())
+	    
+	    def run():
+	        time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+	        print('%d process was runing' % os.getpid())
+	    
+	    p = Pool(3)
+	    
+	    for i in range(4):
+	        p.apply_async(run, args=())
+	    
+	    p.close()
+	    
+	    while True:
+	        # 获取 Pool 中剩余的进程数量
+	        count = len(p._cache)
+	        if count != 0:
+	            time.sleep(random.random())
+	            print('there was %d sub_process' % count)
+	        else:
+	            break
+	    
+	    print('wiating for sub_process..')
+	    p.join()
+	    print('sub_process has done')
+	    
+	    # 结果为
+	    main_process pid: 9786
+	    9787 process was runing
+	    9787 process was runing
+	    9789 process was runing
+	    there was 4 sub_process
+	    9788 process was runing
+	    there was 1 sub_process
+	    wiating for sub_process..
+	    sub_process has done
+	    ```
+	    
+	  
+	  可以看到采用同步（apply）方式，没有主动调用`join()`方法，主进程依然被阻塞，必须等到子进程执行完之后才能运行。采用异步（apply_async）方式，主进程没有被阻塞，只有调用`join()`方法才能迫使主进程停下来等待子进程完成。
+	  
+      所有进程之间的执行顺序不会依照代码编写的前后顺序，而是由系统的调度算法来计算谁先谁后。
+	  
+	* 进程通信
+	
+	  进程之间的通信可以通过队列（Queue）来进行，多个进程一部分向队列里写入数据，一部分从队列里读取数据，从而完成多进程之间的通信问题。
+	  
+	  示例：
+	  
+	  ```
+	  from multiprocessing import Process, Queue
+	  import random, time, os
+	  
+	  
+	  def write(q):
+	      if not q.full():
+	          for i in range(4):
+	              q.put(i)
+	              print('%d was writing data[%d] to queue' % (os.getpid(), i))
+	              time.sleep(random.random())
+	      else:
+	          print('queue is full')
+	  
+	  def read(q):
+	      # 等待队列被写入数据
+	      time.sleep(random.random())
+	      while True:
+	          if not q.empty():
+	              data = q.get()
+	              print('%d was reading data{%d} from queue' % (os.getpid(), data))
+	          else:
+	              print('queue is empty')
+	              break
+	  
+	  # 创建通信队列,进程之间,全局变量不共享
+	  q = Queue()
+	  pw = Process(target=write, args=(q,))
+	  pr = Process(target=read, args=(q,))
+	  
+	  pw.start()
+	  pr.start()
+	  
+	  pr.join()
+	  print('end')
+	  
+	  # 结果为
+	  12706 was writing data[0] to queue
+	  12707 was reading data{0} from queue
+	  queue is empty
+	  12705 was waitting for sub_process
+	  end
+	  12706 was writing data[1] to queue
+	  12706 was writing data[2] to queue
+	  12706 was writing data[3] to queue
+	  ```
+	  
+	  由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
+	  
+	  进程通信改良（pr.terminate()）
+	  
+	  ```
+	  from multiprocessing import Process, Queue
+	  import random, time, os
+	  
+	  
+	  def write(q):
+	      if not q.full():
+	          for i in range(4):
+	              q.put(i)
+	              print('%d was writing data[%d] to queue' % (os.getpid(), i))
+	              time.sleep(random.random())
+	      else:
+	          print('queue is full')
+	  
+	  def read(q):
+	      # 等待队列被写入数据
+	      time.sleep(random.random())
+	      while True:
+	          data = q.get()
+	          print('%d was reading data{%d} from queue' % (os.getpid(), data))
+	  
+	  # 创建通信队列,进程之间,没有全局变量共享之说
+	  q = Queue()
+	  pw = Process(target=write, args=(q,))
+	  pr = Process(target=read, args=(q,))
+	  
+	  pw.start()
+	  pr.start()
+	  
+	  pw.join()
+	  # pr 进程立刻结束
+	  pr.terminate()
+	  print('end')
+	  
+	  # 结果为
+	  12898 was writing data[0] to queue
+	  12898 was writing data[1] to queue
+	  12898 was writing data[2] to queue
+	  12899 was reading data{0} from queue
+	  12899 was reading data{1} from queue
+	  12899 was reading data{2} from queue
+	  12898 was writing data[3] to queue
+	  12899 was reading data{3} from queue
+	  end
+	  ```
+	
+* 线程
+	
+	* 概念
+	
+	  线程是进程下的一部分，进程下负责执行代码程序的就是线程，一个进程下会有很多个线程。同样的，一个主线程下面也有很多子线程。
+	
+	  另外，Python 中的线程依据的是 Java 中的线程模型，如果有兴趣的同学可以研究一下。
+	
+	* 实现方式
+	
+	  示例：
+	
+	  ```
+	  import threading, time
+	  
+	  
+	  def run():
+	      time.sleep(1)
+	      # currentThread() 返回的是当前的线程对象信息
+	      print('%s was runing' % threading.currentThread())
+	      print('current thread\'name: %s' % threading.currentThread().getName())
+	  
+	  # 创建一个线程
+	  t = threading.Thread(target=run, args=())
+	  
+	  # 启动线程
+	  t.start()
+	  
+	  # get_ident 返回的是当前线程对象所在的内存地址,该地址是唯一可以验证线程的数据
+	  # 也可使用 currentThread().getName() 来简单的区分线程
+	  print('current thread\'name: %s' % threading.currentThread().getName())
+	  print('main_thread tid: %s' % threading.get_ident())
+	  
+	  # 结果为
+	  current thread'name: MainThread
+	  main_thread tid: 140427132020480
+	  <Thread(Thread-1, started 140427100555008)> was runing
+	  current thread'name: Thread-1
+	  ```
+	
+	* 通信方式
+	
+	  线程不同于进程，线程里全局变量共享。虽然通信方面很方便，但是由于多个线程可以同时对数据进行操作，这使得线程变得不安全，这里有三种方法可以解决。
+	
+	  * 轮询
+	
+	    通过为数据操作添加 while 循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
+	
+	    示例：
+	
+	    ```
+	    import threading
+	    
+	    
+	    class NewThread(threading.Thread):
+	        flag = 0
+	        g_num = 0
+	    
+	        def __init__(self):
+	            super().__init__()
+	    
+	        def run(self):
+	            print('%s was runing' % threading.currentThread().getName())
+	            if self.name == 'Thread-1':
+	                self.add_num()
+	                NewThread.flag = 1
+	            else:
+	                # 轮询
+	                # Thread-2 被迫等待 Thread-1 完成任务之后才能执行
+	                while True:
+	                    if NewThread.flag:
+	                        self.add_num()
+	                        break
+	    
+	        @classmethod
+	        def add_num(cls):
+	            global g_num
+	            for i in range(1000000):
+	                cls.g_num += 1
+	            print('on the %s, g_num: %d' % (threading.currentThread().getName(), cls.g_num))
+	    
+	    t1 = NewThread()
+	    t2 = NewThread()
+	    
+	    t1.start()
+	    t2.start()
+	    
+	    # 结果为
+	    Thread-1 was runing
+	    Thread-2 was runing
+	    on the Thread-1, g_num: 1000000
+	    on the Thread-2, g_num: 2000000
+	    ```
+	
+	  * 互斥锁
+	
+	    互斥锁是专门为了针对线程安全而设计的一种结构，锁可以强制线程排序，保护线程安全，但是加锁、解锁会消耗系统 CPU 资源。
+	
+	    * 优化
+	
+	      ```
+	      import threading
+	      
+	      
+	      class NewThread(threading.Thread):
+	          g_num = 0
+	          # 生成锁对象
+	          lock = threading.Lock()
+	      
+	          def __init__(self):
+	              super().__init__()
+	      
+	          def run(self):
+	          	# 判断当前线程是否上锁，若未上锁，则一直尝试上锁直至成功
+	              if NewThread.lock.acquire():
+	                  print('%s was runing' % self.name)
+	                  self.add_num()
+	                  # 解锁
+	                  NewThread.lock.release()
+	      
+	          @classmethod
+	          def add_num(cls):
+	              for i in range(1000000):
+	                  cls.g_num += 1
+	              print('on the %s g_num: %d' % (threading.currentThread().getName(), cls.g_num))
+	      
+	      t1 = NewThread()
+	      t2 = NewThread()
+	      
+	      t1.start()
+	      t2.start()
+	      
+	      # 结果为
+	      Thread-1 was runing
+	      on the Thread-1 g_num: 1000000
+	      Thread-2 was runing
+	      on the Thread-2 g_num: 2000000
+	      ```
+	
+	    * 死锁
+	
+	      当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
+	
+	      解决办法：设置超时时间`threading.Lock().acquire(timeout=3)`只要在上锁时设置超时时间`timeout=`，只要超过时间，线程就会不再等待是否解锁，而是直接运行。
+	
+	  * 独立全局变量
+	
+	    多线程之间进行通信,但是又得使得两个线程之间的变量都具有独立性，每个线程从全局变量中得到的数据都不一样。
+	
+	    三种方法 :
+	
+	    ​	传参
+	
+	    ​	字典
+	
+	    ​	特殊全局变量（`threading.local()`）
+	
+	* 进程与线程的异同点
+	
+	  1. 线程和进程的执行顺序都是一样的，都是由操作系统的调度算法决定，不是根据程序的编写顺序来决定。
+	
+	  2. 进程是资源分配的单位，而线程是 CPU 调度的单位。
+	  3. 进程在主程序结束后，程序立马结束,需要手动利用`join()`方法使得主程序发生堵塞，来等待子进程。而主线程的任务结束后,程序会等待子线程结束才会结束故不需要特意使用`join()`方法来使主线程等待子线程。
+	  4. 进程之间的通信需要使用队列 Queue 等一些辅助工具来实现，而线程之间不用，线程之间可以直接共享全局变量。
 
 *未写完，下一次更新补上*
