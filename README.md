@@ -1,6 +1,5 @@
 # Python面试
 
-[TOC]
 
 
 
