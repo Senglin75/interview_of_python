@@ -296,8 +296,6 @@ Python 中通过将对象进行 HASH 来判断该对象是哪种类型，可 HAS
 
 原理：利用闭包，将目标函数外面再套一层函数，使得目标函数具有一个新的功能，并且不改变目标函数原有功能。  
 
-
-
 实现方式：
 
 1. 闭包
@@ -306,30 +304,27 @@ Python 中通过将对象进行 HASH 来判断该对象是哪种类型，可 HAS
    def decorate(func):
        def wrapper():
            print('新功能')
-           func()
-           
+           func()    
        return wrapper
    
    def func():
        print('原有功能')
    
    f = decorate(func)
-   
    f()
    
    # 结果为：
    新功能
    原有功能
    ```
-
+   
 2. @ 语法糖
 
    ```
    def decorate01(func):
        def wrapper():
            print('新功能')
-           func()
-           
+           func()       
        return wrapper
    
    @decorate01
@@ -347,17 +342,13 @@ Python 中通过将对象进行 HASH 来判断该对象是哪种类型，可 HAS
 
 ### 8.说一说类属性、实例属性、私有属性和保护属性
 
-类属性相当于全部变量，所有由类创建出来的实例，都可以使用，而实例属性相当于局部变量，只能由该实例自己使用，当类属性与实例属性命名一样时，在调用属性该属性时，会屏蔽掉类属性，而是调用实例属性，这点跟 LEGB 很像。
-
-
+类属性相当于全部变量，所有由类创建出来的实例，都可以使用，而实例属性相当于局部变量，只能由该实例自己使用，当类属性与实例属性命名一样时，在调用该同名属性时，会屏蔽掉类属性，调用实例属性，这点跟 LEGB 很像。
 
 当通过实例对象来修改类属性时，其实修改的并不是类属性，而是新建了一个跟类属性名一样的实例属性。
 
+Python 中将以两个下划线`__`开头，但不以两个下划线结尾的变量，认作为私有属性，Python 通过 `name manage`算法，将该私有属性的引用更改为`_classname_reference`，用户试图调用该私有属性时，会因为对象引用不一样而找不到该属性，故而实现了「属性私有化」。
 
-
-Python 中将以两个下划线`__`开头，但不以两个下划线结尾的变量，认作为私有属性，Python 通过 `name manage`算法，将该私有属性的引用更改为`_classname_reference`，这样在用户试图调用该私有属性时，会因为对象引用不一样而找不到该属性，故而实现了「属性私有化」。
-
-[^其他两种带有下划线的命名方式]: 以双下划线开头和结尾的变量，被称为魔法方法，以单下划线开头的变量，称为私有属性，但这些都是程序员默认的一种命名方法并不具有实际意义
+[^其他两种带有下划线的命名方式]: 以双下划线开头和结尾的变量，被称为魔法方法，以单下划线开头的变量，称为私有属性，但这些都是程序员默认的一种命名方法并不具有实际意义。
 
 
 
@@ -369,17 +360,13 @@ Python 中将以两个下划线`__`开头，但不以两个下划线结尾的变
 
 Python 相当于其他静态语言，可以在代码运行过程中，改变变量的属性。
 
-
-
-鸭子类型指的是 Python 不用定义变量类型，只要该变量像是什么类型，那么就认为它就是什么类型，我们更多关注的是它的行为，而不是他的类型。
+鸭子类型指的是 Python 不用定义变量类型，只要该变量像是什么类型，那么就认为它就是什么类型，我们更多关注的是它的行为，而不是它的类型。
 
 
 
 ### 10.元类是什么
 
 实例都是由类创建出来，而类则是由元类创建出来。他们之间的关系相当于「奶奶-妈妈-孙子」。  
-
-
 
 示例：
 
@@ -398,8 +385,6 @@ print(new.__mro__)  # 查看该类的继承情况
 (<class '__main__.NewClass'>, <class '__main__.Myclass'>, <class 'object'>)
 ```
 
-
-
 具体点的内容可以参考这篇问答：[什么是元类](<https://stackoverflow.com/questions/100003/what-are-metaclasses-in-python>)
 
 
@@ -415,8 +400,6 @@ print(new.__mro__)  # 查看该类的继承情况
 ### 12.如何动态添加属性
 
 由于 Python 的特性使得程序在运行过程中，我们可以为某个对象添加属性、方法。
-
-  
 
 示例：
 
@@ -445,13 +428,13 @@ new_function
 {'func': <function func at 0x7f9452be12f0>, 'name': 'new_atribute'}
 
 # 另外一种动态添加方法
-
 import types
+
 
 def func01(self):
 	print('new_function01')
 
-# 将实例 m 添加一个属性 func，而这个属性指向func()函数，故当调用 m.func 时，也就相当于调用了 func() 函数，间接实现了为 m 添加方法 func()。
+# 实例 m 添加一个属性 func，而这个属性指向func()函数，故当调用 m.func 时，也就相当于调用了 func() 函数，间接实现了为 m 添加方法 func()。
 m.func = types.MethodType(func, m)
 
 print(m.func())
@@ -465,8 +448,6 @@ print(m.func())
 
 先介绍什么是可迭代的`Iterable`：任何可用于`for`循环的都是可迭代的。也可以使用`collection`模块下的`isinstance(obj, Iterable)`来检验该对象是否可迭代。  
 
-
-
 示例：
 
 ```
@@ -479,133 +460,115 @@ print(isinstance(123,Iterable))
 # 结果为 True，False
 ```
 
+* 迭代器
 
+    任何可以使用`next()`函数的都是迭代器，也可使用`iter()`函数将可迭代对象变为迭代器。  
 
-迭代器：任何可以使用`next()`函数的都是迭代器，也可使用`iter()`函数将可迭代对象变为迭代器。  
+    示例：
 
+    ```
+    from collections import Iterator
+    
+    
+    itr = iter('abc')
+    
+    print(type(itr))
+    print(isinstance(itr, Iterator)) 
+    
+    # 结果为 Iterator，True
+    ```
 
+* 生成器
 
-示例：
+    任何函数中含有`yield`关键字的都是生成器，列表生成式中的`[]`改为`()`也是一个生成器。
 
-```
-from collections import Iterator
+    * 实现方式
 
+        示例：
 
-itr = iter('abc')
-
-print(type(itr))
-print(isinstance(itr,Iterator)) 
-
-# 结果为 Iterator，True
-```
-
-
-
-生成器：任何函数中含有`yield`关键字的都是生成器，列表生成式中的`[]`改为`()`也是一个生成器。
-
-
-
-示例：
-
-```
-g = [i for i in range(10)]
-
-print(type(g))
-
-# 结果为 list
-
-g1 = (i for i in range(10))
-
-print(type(g1))
-
-# 结果为 generator
-
-def func():
-    for i in range(10):
-        yield i
-
-f = func()
-print(f)
-
-# 结果为 <generator object func at 0x7f92f5294048>
-```
-
-
-
-生成器怎么取值，什么时候结束。
-
-
-
-生成器可以通过`next(f)`、`f.__next__()`和`f.send()`三种方式来取值，
-
-
-
-示例：
-
-```
-def func01():
-    for i in range(10):
-        yield i
-
-f = func()
-print(next(f))
-print(f.__next__())
-print(f.send('hahah'))
-
-# 结果为 
-0
-1
-2
-```
-
-
-
-其中`f.send()`可以向生成器传值，但是其第一次传入的值默认为`None`。如果想要取出`send('hahah')`里传入的值，则需要在生成器中添加接收的变量。
-
-
-
-示例：
-
-```
-def func():
-    for i in range(10):
-        # yield i
-        temp = yield i
-        print(temp)
+        ```
+        g = [i for i in range(10)]
         
-f = func()
+        print(type(g))
+        
+        # 结果为 list
+        
+        g1 = (i for i in range(10))
+        
+        print(type(g1))
+        
+        # 结果为 generator
+        
+        def func():
+            for i in range(10):
+                yield i
+        
+        f = func()
+        print(f)
+        
+        # 结果为 <generator object func at 0x7f92f5294048>
+        ```
 
-print(next(f))
-print(f.__next__())
-print(f.send('hahah'))  
+    * 生成器怎么取值，什么时候结束
 
-# 结果为
-0
-None
-1
-hahah
-2
-```
+        生成器可以通过`next(f)`、`f.__next__()`和`f.send()`三种方式来取值
 
+        示例：
 
+        ```
+        def func01():
+            for i in range(10):
+                yield i
+        
+        f = func()
+        print(next(f))
+        print(f.__next__())
+        print(f.send('hahah'))
+        
+        # 结果为 
+        0
+        1
+        2
+        ```
 
-生成器里的值被取完之后，或者中间遇到 `return`关键字，就会退出，这三种方法有一个共同点：当生成器取完之后会抛出`StopIteration`的错误。
+        其中`f.send()`可以向生成器传值，但是其第一次传入的值默认为`None`。如果想要取出`send('hahah')`里传入的值，则需要在生成器中添加接收的变量。
 
+        示例：
 
+        ```
+        def func():
+            for i in range(10):
+                # yield i
+                temp = yield i
+                print(temp)
+                
+        f = func()
+        
+        print(next(f))
+        print(f.__next__())
+        print(f.send('hahah'))  
+        
+        # 结果为
+        0
+        None
+        1
+        hahah
+        2
+        ```
 
-而使用`for`循环来取出生成器里的值就不会抛出错误，这也是最被推荐的。
+        生成器里的值被取完之后，或者中间遇到 `return`关键字，就会退出，这三种方法有一个共同点：当生成器取完之后会抛出`StopIteration`的错误。
 
-
-
-应用场景：在生成一个包含很多数（百万级别）的列表时，但是又只用得到其中很小一部分的数时，使用列表生成式会极大的浪费内存，且不一定能够生成，因为受机器内存限制。  
-
-而使用生成器则不然，生成器只是在你需要的时候，才会申请一块内存，可以边取边用，极大的降低了内存消耗。
-
-
-
-生成器用的最多的地方在于「协程」。由于基于 C 解释器下的 Python 中含有一个 GIL 锁，使得 Pyhon 的多线程是一个假性多线程，这也是为什么很多人说 Python 性能慢的原因。
-
-
+        而使用`for`循环来取出生成器里的值就不会抛出错误，这也是最被推荐的。
+        
+    * 应用场景
+  
+    在生成一个包含很多数（百万级别）的列表时，但是又只用得到其中很小一部分的数时，使用列表生成式会极大的浪费内存，且不一定能够生成，因为受机器内存限制。  
+      
+      而使用生成器则不然，生成器只是在你需要的时候，才会申请一块内存，可以边取边用，极大的降低了内存消耗。
+      
+      生成器用的最多的地方在于「协程」。由于基于 C 解释器下的 Python 中含有一个 GIL 锁，使得 Pyhon 的多线程是一个假性多线程，这也是为什么很多人说 Python 性能慢的原因。
+      
+      
 
 ------
 
@@ -623,205 +586,207 @@ hahah
 
   * 实现方式
 
-    1. fork() 
-    2. mutiprocessing.Process
-    3. mutiprocessing.Pool
+    * fork() 
+  
+    * mutiprocessing.Process
+
+    * mutiprocessing.Pool
 
   * 优缺点
 
-    1. `fork()`是计算机最底层的进程实现方式，一个`fork()`方法创建出来的进程有两个：主进程、子进程。
+    * `fork()`是计算机最底层的进程实现方式，一个`fork()`方法创建出来的进程有两个：主进程、子进程。`
 
-       `fork()`创建出来的进程，主进程不会等待子进程。
+        fork()`创建出来的进程，主进程不会等待子进程。
 
-       示例：
+        示例：
+  
+        ```
+        import os
+        
+        
+        print('current_pid :%d' % os.getpid())
+        
+        res = os.fork()
+        
+        # 子进程返回的是 0
+        if res == 0:
+        	print('res: %d' % res)
+        	print('sub_pid: %d' % os.getpid())
+        
+        # 主进程返回的是子进程的 pid
+        else:
+        	print('main_pid: %d' % os.getpid())
+        	print('res：%d' % res)
+        
+        # 结果为
+        current_pid :12775
+        main_pid: 12775
+        res：12776
+        res: 0
+      sub_pid: 12776multiprocessing.Process
+        ```
 
-       ```
-       import os
-       
-       
-       print('current_pid :%d' % os.getpid())
-       
-       res = os.fork()
-       
-       # 子进程返回的是 0
-       if res == 0:
-       	print('res: %d' % res)
-       	print('sub_pid: %d' % os.getpid())
-       
-       # 主进程返回的是子进程的 pid
-       else:
-       	print('main_pid: %d' % os.getpid())
-       	print('res：%d' % res)
-       
-       # 结果为
-       current_pid :12775
-       main_pid: 12775
-       res：12776
-       res: 0
-       sub_pid: 12776
-       ```
-
-    2. multiprocessing.Process
-
-       `multiprocessing`模块通过将`fork`方法封装成一个`Process`类，该类有一个`start()`方法，当调用该方法时，会自动调用`run()`方法，开启一个进程。并且由`Process`创建出来的进程，可以使用`join()`方法，使得主进程堵塞，被迫等待子进程。
-       
-       示例：
-       
-       ```
-       from multiprocessing import Process
-       import os, time
-       
-       
-       print('man_process pid : %d' % os.getpid())
-       
-       class NewProcess(Process):
-           def __init__(self):
-               Process.__init__(self)
-       
-           def run(self):
-               time.sleep(3)
-               print('%d process was runing' % os.getpid())
-       
-       np = NewProcess()
-       np.start()
-       
-       # 结果为
-       man_process pid : 7846
-       7847 process was runing
-       ```
-       
+    * `multiprocessing`模块通过将`fork`方法封装成一个`Process`类，该类有一个`start()`方法，当调用该方法时，会自动调用`run()`方法，开启一个进程。并且由`Process`创建出来的进程，可以使用`join()`方法，使得主进程堵塞，被迫等待子进程。
+  
+        示例：
     
-     3.multiprocessing.Pool
+        ```
+        from multiprocessing import Process
+        import os, time
+        
+        
+        print('man_process pid : %d' % os.getpid())
+        
+        class NewProcess(Process):
+            def __init__(self):
+                Process.__init__(self)
+        
+            def run(self):
+                time.sleep(3)
+                print('%d process was runing' % os.getpid())
+        
+        np = NewProcess()
+        np.start()
+        
+        # 结果为
+        man_process pid : 7846
+        7847 process was runing
+        ```
     
-    ​	multiprocess 下另一种开启进程的方式是通过 Pool 进程池来实现。进程池可以开启多个进程来执行多个任务，但是进程数最大不会超过系统 CPU 核数。同样的，由 Pool 创建出来的进程，主进程也不会等待子进程，通过`join()`方法可以迫使主进程等待子进程，或者使用`apply()`同步的方式。
+    * multiprocessing.Pool
     
-    ​	示例：
+        multiprocess 下另一种开启进程的方式是通过 Pool 进程池来实现。进程池可以开启多个进程来执行多个任务，但是进程数最大不会超过系统 CPU 核数。同样的，由 Pool 创建出来的进程，主进程也不会等待子进程，通过`join()`方法可以迫使主进程等待子进程，或者使用`apply()`同步的方式。
     
-    ```
-    from multiprocessing import Pool
-    import time, os, random
+        示例：
     
+        ```
+        from multiprocessing import Pool
+        import time, os, random
+        
+        
+        def run():
+        	# random.random() 随机生成一个介于(0, 1)之间的浮点数
+            time.sleep(random.random())  
+            print('%d process was runing' % os.getpid())
+        
+        # 当任务数量超过当前 Pool 里进程的数量,进程会轮流执行任务，也就意味着后续的任务会被迫等待,等待一个新的进程释放,一旦有进程被释放出来,立马运行.
+        p = Pool(3)
+        
+        for i in range(4):
+            p.apply_async(run, args=())
+        
+        # 关闭进程池，无法再向进程池中添加任务
+        p.close()
+        
+        print('watting for sub_process...')
+        
+        # 堵塞主进程,使其被迫等待子进程完成任务
+        p.join()
+        
+        print('sub_process has done!')
+        
+        # 结果为
+        watting for sub_process...
+        8640 process was runing
+        8639 process was runing
+        8638 process was runing
+        8640 process was runing
+        sub_process has done!
+        ```
     
-    def run():
-    	# random.random() 随机生成一个介于(0, 1)之间的浮点数
-        time.sleep(random.random())  
-        print('%d process was runing' % os.getpid())
+        Pool 中的进程有两种运行方式：
     
-    # 当任务数量超过当前 Pool 里进程的数量,进程会轮流执行任务，也就意味着后续的任务会被迫等待,等待一个新的进程释放,一旦有进程被释放出来,立马运行.
-    p = Pool(3)
+        * 同步（apply）
     
-    for i in range(4):
-        p.apply_async(run, args=())
+            ```
+            from multiprocessing import Pool
+            import time, os, random
+            
+            
+            print('main_process pid: %d' % os.getpid())
+            
+            def run():
+                time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+                print('%d process was runing' % os.getpid())
+            
+            p = Pool(3)
+            
+            for i in range(4):
+                p.apply(run, args=())
+            
+            p.close()
+            print('waiting for sub_process')
+            
+            while True:
+                # 获取 Pool 中剩余的进程数量
+                count = len(p._cache)
+                if count != 0:
+                    print('there was %d sub_process' % count)
+                    time.sleep(random.random())
+                else:
+                    break
+                    
+            print('sub_process has done')
+            
+            # 结果为
+            main_process pid: 4295
+            4297 process was runing
+            4296 process was runing
+            4298 process was runing
+            4297 process was runing
+            wating for sub_process
+            sub_process has done
+            ```
     
-    # 关闭进程池，无法再向进程池中添加任务
-    p.close()
+        * 异步（applay_async)
     
-    print('watting for sub_process...')
-    
-    # 堵塞主进程,使其被迫等待子进程完成任务
-    p.join()
-    
-    print('sub_process has done!')
-    
-    # 结果为
-    watting for sub_process...
-    8640 process was runing
-    8639 process was runing
-    8638 process was runing
-    8640 process was runing
-    sub_process has done!
-    ```
-    
-    Pool 中的进程有两种运行方式：
-    
-    * 同步（apply）：
-    
-      ```
-      from multiprocessing import Pool
-      import time, os, random
-      
-      
-      print('main_process pid: %d' % os.getpid())
-      
-      def run():
-          time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
-          print('%d process was runing' % os.getpid())
-      
-      p = Pool(3)
-      
-      for i in range(4):
-          p.apply(run, args=())
-      
-      p.close()
-      
-      while True:
-          # 获取 Pool 中剩余的进程数量
-          count = len(p._cache)
-          if count != 0:
-              print('there was %d sub_process' % count)
-          else:
-              break
-              
-      print('sub_process has done')
-      
-      # 结果为
-      main_process pid: 9686
-      9689 process was runing
-      9687 process was runing
-      9688 process was runing
-      9689 process was runing
-      sub_process has done
-      ```
-    
-    * 异步（applay_async):
-    
-      ```
-      from multiprocessing import Pool
-	    import time, os, random
-	    
-	    
-	    print('main_process pid: %d' % os.getpid())
-	    
-	    def run():
-	        time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
-	        print('%d process was runing' % os.getpid())
-	    
-	    p = Pool(3)
-	    
-	    for i in range(4):
-	        p.apply_async(run, args=())
-	    
-	    p.close()
-	    
-	    while True:
-	        # 获取 Pool 中剩余的进程数量
-	        count = len(p._cache)
-	        if count != 0:
-	            time.sleep(random.random())
-	            print('there was %d sub_process' % count)
-	        else:
-	            break
-	    
-	    print('wiating for sub_process..')
-	    p.join()
-	    print('sub_process has done')
-	    
-	    # 结果为
-	    main_process pid: 9786
-	    9787 process was runing
-	    9787 process was runing
-	    9789 process was runing
-	    there was 4 sub_process
-	    9788 process was runing
-	    there was 1 sub_process
-	    wiating for sub_process..
-	    sub_process has done
-	    ```
-	    
+	          ```
+	          from multiprocessing import Pool
+	          import time, os, random
+	          
+	          
+	          print('main_process pid: %d' % os.getpid())
+	          
+	          def run():
+	              time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+	              print('%d process was runing' % os.getpid())
+	          
+	          p = Pool(3)
+	          
+	          for i in range(4):
+	              p.apply_async(run, args=())
+	          
+	          p.close()
+	          
+	          while True:
+	              # 获取 Pool 中剩余的进程数量
+	              count = len(p._cache)
+	              if count != 0:
+	                  print('there was %d sub_process' % count)
+	                  time.sleep(random.random())
+	              else:
+	                  break
+	                  
+	          print('wiating for sub_process..')
+	          p.join()
+	          
+	          print('sub_process has done')
+	          
+	          # 结果为
+	          main_process pid: 4342
+	          wiating for sub_process..
+	          there was 4 sub_process
+	          4344 process was runing
+	          there was 3 sub_process
+	          4345 process was runing
+	          4344 process was runing
+	          4343 process was runing
+	          sub_process has done
+	          ```
 	  
-	  可以看到采用同步（apply）方式，没有主动调用`join()`方法，主进程依然被阻塞，必须等到子进程执行完之后才能运行。采用异步（apply_async）方式，主进程没有被阻塞，只有调用`join()`方法才能迫使主进程停下来等待子进程完成。
+            可以看到采用同步（apply）方式，没有主动调用`join()`方法，主进程依然被阻塞，必须等到子进程执行完之后才能运行。采用异步（apply_async）方式，主进程没有被阻塞，只有调用`join()`方法才能迫使主进程停下来等待子进程完成。
 	  
-      所有进程之间的执行顺序不会依照代码编写的前后顺序，而是由系统的调度算法来计算谁先谁后。
+	          所有进程之间的执行顺序不会依照代码编写的前后顺序，而是由系统的调度算法来计算谁先谁后。
 	  
 	* 进程通信
 	
@@ -862,23 +827,25 @@ hahah
 	  pw.start()
 	  pr.start()
 	  
+	  pw.join()
 	  pr.join()
 	  print('end')
 	  
 	  # 结果为
-	  12706 was writing data[0] to queue
-	  12707 was reading data{0} from queue
+	  4640 was writing data[0] to queue
+	  4640 was writing data[1] to queue
+	  4640 was writing data[2] to queue
+	  4641 was reading data{0} from queue
+	  4641 was reading data{1} from queue
+	  4641 was reading data{2} from queue
 	  queue is empty
-	  12705 was waitting for sub_process
+	  4640 was writing data[3] to queue
 	  end
-	  12706 was writing data[1] to queue
-	  12706 was writing data[2] to queue
-	  12706 was writing data[3] to queue
 	  ```
 	  
 	  由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
 	  
-	  进程通信改良（pr.terminate()）
+	  进程通信改良（`terminate()`）
 	  
 	  ```
 	  from multiprocessing import Process, Queue
@@ -968,11 +935,11 @@ hahah
 	
 	* 通信方式
 	
-	  线程不同于进程，线程里全局变量共享。虽然通信方面很方便，但是由于多个线程可以同时对数据进行操作，这使得线程变得不安全，这里有三种方法可以解决。
+	  线程不同于进程，线程里全局变量共享。虽然通信很方便，但是由于多个线程可以同时对数据进行操作，这使得线程变得不安全，这里有三种方法可以解决。
 	
 	  * 轮询
 	
-	    通过为数据操作添加 while 循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
+	    通过为数据操作添加`while`循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
 	
 	    示例：
 	
@@ -1039,11 +1006,11 @@ hahah
 	              super().__init__()
 	      
 	          def run(self):
-	          	# 判断当前线程是否上锁，若未上锁，则一直尝试上锁直至成功
+	          	# 判断当前线程是否上锁，若未上锁，则一直尝试上锁（acquire）直至成功
 	              if NewThread.lock.acquire():
 	                  print('%s was runing' % self.name)
 	                  self.add_num()
-	                  # 解锁
+	                  # release 解锁
 	                  NewThread.lock.release()
 	      
 	          @classmethod
@@ -1070,25 +1037,28 @@ hahah
 	      当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
 	
 	      解决办法：设置超时时间`threading.Lock().acquire(timeout=3)`只要在上锁时设置超时时间`timeout=`，只要超过时间，线程就会不再等待是否解锁，而是直接运行。
+	      
+	    * 银行家算法
+	
+	        [银行家算法]([https://zh.wikipedia.org/wiki/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95](https://zh.wikipedia.org/wiki/银行家算法))
 	
 	  * 独立全局变量
 	
-	    多线程之间进行通信,但是又得使得两个线程之间的变量都具有独立性，每个线程从全局变量中得到的数据都不一样。
+	    多线程之间进行通信，但是又得使得两个线程之间的变量都具有独立性，每个线程从全局变量中得到的数据都不一样。
 	
 	    三种方法 :
 	
-	    ​	传参
-	
-	    ​	字典
-	
-	    ​	特殊全局变量（`threading.local()`）
+	    * 传参
+	  * 字典
+	    * 特殊全局变量（`threading.local()`）	
 	
 	* 进程与线程的异同点
 	
-	  1. 线程和进程的执行顺序都是一样的，都是由操作系统的调度算法决定，不是根据程序的编写顺序来决定。
+	  * 线程和进程的执行顺序都是一样的，都是由操作系统的调度算法决定，不是根据程序的编写顺序来决定。
 	
-	  2. 进程是资源分配的单位，而线程是 CPU 调度的单位。
-	  3. 进程在主程序结束后，程序立马结束,需要手动利用`join()`方法使得主程序发生堵塞，来等待子进程。而主线程的任务结束后,程序会等待子线程结束才会结束故不需要特意使用`join()`方法来使主线程等待子线程。
-	  4. 进程之间的通信需要使用队列 Queue 等一些辅助工具来实现，而线程之间不用，线程之间可以直接共享全局变量。
+	  * 进程是资源分配的单位，而线程是 CPU 调度的单位。
+	  * 进程在主程序结束后，程序立马结束,需要手动利用`join()`方法使得主程序发生堵塞，来等待子进程。而主线程的任务结束后，程序会等待子线程结束才会结束。故不需要特意使用`join()`方法来使主线程等待子线程。
+	  * 进程之间的通信需要使用队列 Queue 等一些辅助工具来实现，而线程之间不用，线程之间可以直接共享全局变量。
+	  * 多进程适合 CPU 密集型，多线程适合 I/O 密集型。
 
 *未写完，下一次更新补上*
