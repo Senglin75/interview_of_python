@@ -338,7 +338,6 @@ Python 中通过将对象进行 HASH 来判断该对象是哪种类型，可 HAS
    原有功能
    ```
 
-​     
 
 ### 8.说一说类属性、实例属性、私有属性和保护属性
 
@@ -487,6 +486,7 @@ print(isinstance(123,Iterable))
     生成器在启动后，如果程序运行到`yeild`关键字时，会从当前程序退出，并返回`yeild`关键后面的内容。
 
     * 实现方式
+    
         示例：
         ```
         g = [i for i in range(10)]
@@ -579,7 +579,8 @@ print(isinstance(123,Iterable))
 
 * 进程
 	* 概念
-    	一个程序对应一个进程，这个进程被叫做主进程，而一个主进程下面还有许多子进程。
+
+      一个程序对应一个进程，这个进程被叫做主进程，而一个主进程下面还有许多子进程。
 
 	* 实现方式
 		* fork()
@@ -610,9 +611,7 @@ print(isinstance(123,Iterable))
 		  res：12776
 		  res: 0
 		  sub_pid: 12776
-  ```
-		
-  
+  		  ```
 		
 		* multiprocessing.Process
 		
@@ -621,7 +620,7 @@ print(isinstance(123,Iterable))
 		  ```
 		  from multiprocessing import Process
 		  import os, time
-		    
+		  
 		    
 		  print('man_process pid : %d' % os.getpid())
 		    
@@ -636,63 +635,59 @@ print(isinstance(123,Iterable))
 		  np = NewProcess()
 		  np.start()
 		    
-  # 结果为
+  		  # 结果为
 		  man_process pid : 7846
 		  7847 process was runing
-  ```
-		
-		  
-		
+  		  ```
+		 
 		* multiprocessing.Pool
 			* 同步（apply）
 		
 			  示例：
 		  
-		    ```
-		    from multiprocessing import Pool
-		    import time, os, random  
+		      ```
+		      from multiprocessing import Pool
+		      import time, os, random  
 		    
 		    
-		    print('main_process pid: %d' % os.getpid())
+		      print('main_process pid: %d' % os.getpid())
 		    
-		    def run():
-		        time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
-		        print('%d process was runing' % os.getpid())
+		      def run():
+		          time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+		          print('%d process was runing' % os.getpid())
 		    
-		    p = Pool(3)
+		      p = Pool(3)
 		    
-		    for i in range(4):
-		        p.apply(run, args=())
+		      for i in range(4):
+		          p.apply(run, args=())
 		    
-		    p.close()
-		    print('waiting for sub_process')
+		      p.close()
+		      print('waiting for sub_process')
 		    
-		    while True:
-		        # 获取 Pool 中剩余的进程数量
-		        count = len(p._cache)
-		        if count != 0:
-		            print('there was %d sub_process' % count)
-		            time.sleep(random.random())
-		        else:
-		            break
+		      while True:
+		          # 获取 Pool 中剩余的进程数量
+		          count = len(p._cache)
+		          if count != 0:
+		              print('there was %d sub_process' % count)
+		              time.sleep(random.random())
+		          else:
+		              break
 		            
-		    print('sub_process has done')
+		      print('sub_process has done')
 		    
-		    # 结果为
-		    main_process pid: 4295
-    4297 process was runing
-		    4296 process was runing
-    4298 process was runing
-		    4297 process was runing
-		    wating for sub_process
-		    sub_process has done
-		  ```
-			
-		  
+		      # 结果为
+		      main_process pid: 4295
+    		  4297 process was runing
+		      4296 process was runing
+    		  4298 process was runing
+		      4297 process was runing
+		      wating for sub_process
+		      sub_process has done
+		      ```
 			
 			* 异步（apply_async)
 			
-				示例：
+			  示例：
 			  
 			  ```
 			  from multiprocessing import Pool
@@ -713,30 +708,30 @@ print(isinstance(123,Iterable))
 			      
 			  p.close()
 			      
-		    while True:
+		      while True:
 			      # 获取 Pool 中剩余的进程数量
 			      count = len(p._cache)
 			      if count != 0:
-	  	          print('there was %d sub_process' % count)
-			          time.sleep(random.random())
+	  	              print('there was %d sub_process' % count)
+                      time.sleep(random.random())
 			      else:
 	  	          break
 			              
 			  print('wiating for sub_process..')
-		    p.join()
+		      p.join()
 	  	      
 			  print('sub_process has done')
 		        
 			  # 结果为
-	  main_process pid: 4342
+	  		  main_process pid: 4342
 			  wiating for sub_process..
-		    there was 4 sub_process
+		      there was 4 sub_process
 			  4344 process was runing
 			  there was 3 sub_process
-		  4345 process was runing
+		      4345 process was runing
 			  4344 process was runing
 			  4343 process was runing
-		  sub_process has done
+		      sub_process has done
 			  ```
 			  
 			  
@@ -747,6 +742,7 @@ print(isinstance(123,Iterable))
 		* `multiprocess`下另一种开启进程的方式是通过`Pool`进程池来实现。进程池可以开启多个进程来执行多个任务，但是进程数最大不会超过系统 CPU 核数。同样的，由`Pool`创建出来的进程，主进程也不会等待子进程，通过`join()`方法可以迫使主进程等待子进程，或者使用`apply()`同步的方式。
 	
 	* 进程通信
+
 		进程之间的通信可以通过队列（Queue）来进行，多个进程一部分向队列里写入数据，一部分从队列里读取数据，从而完成多进程之间的通信问题。
 	
 		示例：
@@ -765,42 +761,42 @@ print(isinstance(123,Iterable))
 	      else:
 	          print('queue is full')
 		
-		def read(q):
-		    # 等待队列被写入数据
-		    time.sleep(random.random())
-		    while True:
-		        if not q.empty():
-		            data = q.get()
+	  def read(q):
+		  # 等待队列被写入数据
+		  time.sleep(random.random())
+		  while True:
+		      if not q.empty():
+		          data = q.get()
 	              print('%d was reading data{%d} from queue' % (os.getpid(), data))
-		        else:
-		             print('queue is empty')
-		             break
+		      else:
+		           print('queue is empty')
+		           break
 		  
 	  # 创建通信队列,进程之间,全局变量不共享
-		q = Queue()
-		pw = Process(target=write, args=(q,))
-		pr = Process(target=read, args=(q,))
+      q = Queue()
+      pw = Process(target=write, args=(q,))
+	  pr = Process(target=read, args=(q,))
 		  
-		pw.start()
+	  pw.start()
 		pr.start()
 		  
-		pw.join()
-		pr.join()
-		print('end')
+	  pw.join()
+	  pr.join()
+	  print('end')
 		  
-	# 结果为
-		4640 was writing data[0] to queue
-	4640 was writing data[1] to queue
-		4640 was writing data[2] to queue
-	4641 was reading data{0} from queue
-		4641 was reading data{1} from queue
-		4641 was reading data{2} from queue
-		queue is empty
-		4640 was writing data[3] to queue
-		end
+	  # 结果为
+	  4640 was writing data[0] to queue
+	  4640 was writing data[1] to queue
+	  4640 was writing data[2] to queue
+	  4641 was reading data{0} from queue
+	  4641 was reading data{1} from queue
+	  4641 was reading data{2} from queue
+	  queue is empty
+	  4640 was writing data[3] to queue
+	  end
 	  ```
 		
-	由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
+	  由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
 		
 	* 进程通信改良
 	
@@ -856,7 +852,8 @@ print(isinstance(123,Iterable))
 	  
 * 线程
 	* 概念
-		线程是进程下的一部分，进程下负责执行代码程序的就是线程，一个进程下会有很多个线程。同样的，一个主线程下面也有很多子线程。
+
+	  线程是进程下的一部分，进程下负责执行代码程序的就是线程，一个进程下会有很多个线程。同样的，一个主线程下面也有很多子线程。
 	
 	  另外，Python 中的线程依据的是 Java 中的线程模型，如果有兴趣的同学可以研究一下。
 
@@ -890,258 +887,267 @@ print(isinstance(123,Iterable))
 	  main_thread tid: 140427132020480
 	  <Thread(Thread-1, started 140427100555008)> was runing
 	  current thread'name: Thread-1
-  ```
-	
+  	  ```
 	  
 	
-* 线程通信
+	* 线程通信
+
 		* 通信队列
-		通信队列作为相对来说最为安全的线程通信手段，其中`Queue`模块自身拥有所有所需的锁，这使得通信队列中的对象可以安全的在多线程之间共享。
+
+		  通信队列作为相对来说最为安全的线程通信手段，其中`Queue`模块自身拥有所有所需的锁，这使得通信队列中的对象可以安全的在多线程之间共享。
 	
-			这里用常见的「生产者-消费者模型」来介绍。
+	  	  这里用常见的「生产者-消费者模型」来介绍。
 	
-			示例：
+	  	  示例：
 			
-	    ```
-	    import threading, queue, time, random
-	    
-	    
-      flag = object()
-	        
-	    def producter(q):
-	        for i in range(4):
-	            q.put(i)
-	            print('%s put data{%d} in queue' % (threading.currentThread().getName(), i))
-	            time.sleep(random.random())
-	            
-	        q.put(flag)
-	        
-	    def consumer(q):
-	        time.sleep(random.random())
-	        while True:
-	            res = q.get()
-	            if res == flag:
-	                q.put(flag)
-	                break
-	            else:
-	                print('%s get data{%d} from queue' % (threading.currentThread().getName(), res))
-	        
-	    # 创建队列
-	    q = queue.Queue()
-	        
-	    # 创建线程
-	    pro = threading.Thread(target=producter, args=(q,))
-	    con = threading.Thread(target=consumer, args=(q,))
-	        
-	    pro.start()
-	    con.start()
-	        
-	    # 结果为
-	    Thread-1 put data{0} in queue
-	    Thread-1 put data{1} in queue
-	    Thread-2 get data{0} from queue
-	    Thread-2 get data{1} from queue
-    Thread-1 put data{2} in queue
-	    Thread-2 get data{2} from queue
-    Thread-1 put data{3} in queue
-	Thread-2 get data{3} from queue
-	    end
-```
+	  	  ```
+		  import threading, queue, time, random
+		    
+		    
+	      flag = object()
+		        
+		  def producter(q):
+		      for i in range(4):
+		          q.put(i)
+		          print('%s put data{%d} in queue' % (threading.currentThread().getName(), i))
+		          time.sleep(random.random())
+		            
+		      q.put(flag)
+		        
+		  def consumer(q):
+		      time.sleep(random.random())
+		      while True:
+		          res = q.get()
+		          if res == flag:
+		              q.put(flag)
+		              break
+		          else:
+		              print('%s get data{%d} from queue' % (threading.currentThread().getName(), res))
+		        
+		  # 创建队列
+		  q = queue.Queue()
+		        
+		  # 创建线程
+		  pro = threading.Thread(target=producter, args=(q,))
+		  con = threading.Thread(target=consumer, args=(q,))
+		        
+		  pro.start()
+		  con.start()
+		        
+		  # 结果为
+		  Thread-1 put data{0} in queue
+		  Thread-1 put data{1} in queue
+		  Thread-2 get data{0} from queue
+		  Thread-2 get data{1} from queue
+	  	  Thread-1 put data{2} in queue
+		  Thread-2 get data{2} from queue
+	  	  Thread-1 put data{3} in queue
+		  Thread-2 get data{3} from queue
+		  end
+		  ```
+				
+		  这里有一个细节。在多线程下，当生产者任务完成之后，向队列`queue`里添加了一个特殊对象（终止信号）`flag`，这样当消费者从`queue`中取出任务时，当取到`flag`时，意味着所有任务被取出，并再次将`flag`添加至`queue`中，这样其他线程中的消费者在接收到这个终止信号后，也会得知当前生产者任务已经全部发布。
 			
-			这里有一个细节。在多线程下，当生产者任务完成之后，向队列`queue`里添加了一个特殊对象（终止信号）`flag`，这样当消费者从`queue`中取出任务时，当取到`flag`时，意味着所有任务被取出，并再次将`flag`添加至`queue`中，这样其他线程中的消费者在接收到这个终止信号后，也会得知当前生产者任务已经全部发布。
-		
 		* 轮询
-			通过为数据操作添加`while`循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
-		
-			示例：
+
+		  通过为数据操作添加`while`循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
 			
+		  示例：
+				
 		  ```
 		  import threading
-		    
-		    
+			    
+			    
 		  class NewThread(threading.Thread):
-		      flag = 0
-		      g_num = 0
-		    
-		      def __init__(self):
-		          super().__init__()
-		    
-		      def run(self):
-		          print('%s was runing' % threading.currentThread().getName())
-		          if self.name == 'Thread-1':
-		              self.add_num()
-		              NewThread.flag = 1
-		          else:
-		              # 轮询
-		              # Thread-2 被迫等待 Thread-1 完成任务之后才能执行
-		              while True:
-		                  if NewThread.flag:
-		                      self.add_num()
-		                      break
-		    
-		      @classmethod
-		      def add_num(cls):
-		          global g_num
+			  flag = 0
+			  g_num = 0
+			    
+			  def __init__(self):
+			      super().__init__()
+			   
+			  def run(self):
+			      print('%s was runing' % threading.currentThread().getName())
+
+			      if self.name == 'Thread-1':
+			          self.add_num()
+			          NewThread.flag = 1
+			      else:
+			          # 轮询
+				      # Thread-2 被迫等待 Thread-1 完成任务之后才能执行
+				      while True:
+				          if NewThread.flag:
+				              self.add_num()
+				              break
+				      
+			  @classmethod
+			  def add_num(cls):
+	              global g_num
 		          for i in range(1000000):
-		              cls.g_num += 1
+			          cls.g_num += 1
+
 		          print('on the %s, g_num: %d' % (threading.currentThread().getName(), cls.g_num))
-		    
+				    
 		  t1 = NewThread()
 		  t2 = NewThread()
-		    
+				    
 		  t1.start()
 		  t2.start()
-	    
+			    
 		  # 结果为
 		  Thread-1 was runing
-  Thread-2 was runing
+	      Thread-2 was runing
 		  on the Thread-1, g_num: 1000000
-	  on the Thread-2, g_num: 2000000
-	```
-			
-		
-			
+		  on the Thread-2, g_num: 2000000
+		  ```					
+				
 		* 互斥锁
-	  	互斥锁是专门为了针对线程安全而设计的一种结构，锁可以强制线程排序，保护线程安全，但是加锁、解锁会消耗系统 CPU 资源。
+
+		  互斥锁是专门为了针对线程安全而设计的一种结构，锁可以强制线程排序，保护线程安全，但是加锁、解锁会消耗系统 CPU 资源。
+		  
+		* 互斥锁优化
+		  
+		  示例：
+		  
+		  ```
+		  import threading
+		      
+		      
+		  class NewThread(threading.Thread):
+		      g_num = 0
+		      # 生成锁对象
+		      lock = threading.Lock()
+		      
+		      def __init__(self):
+		          super().__init__()
+		      
+		      def run(self):
+		     	  # 判断当前线程是否上锁，若未上锁，则一直尝试上锁（acquire）直至成功
+		          with NewThread.lock:
+		              print('%s was runing' % self.name)
+		              self.add_num()
+		      
+		      @classmethod
+		      def add_num(cls):
+		          for i in range(1000000):
+		              cls.g_num += 1
+                      
+                  print('on the %s g_num: %d' % (threading.currentThread().getName(), cls.g_num))
+		      
+	      t1 = NewThread()
+	      t2 = NewThread()
 	  
-	  * 互斥锁优化
-	  
-	    示例：
-	  
-	    ```
-	    import threading
-	      
-	      
-	    class NewThread(threading.Thread):
-	    	g_num = 0
-	      	# 生成锁对象
-	      	lock = threading.Lock()
-	      
-	      	def __init__(self):
-	          	super().__init__()
-	      
-	      	def run(self):
-	     		# 判断当前线程是否上锁，若未上锁，则一直尝试上锁（acquire）直至成功
-	          	with NewThread.lock:
-	              	print('%s was runing' % self.name)
-	             	self.add_num()
-	      
-	     	@classmethod
-	        def add_num(cls):
-	           	for i in range(1000000):
-	              	cls.g_num += 1
-	           	print('on the %s g_num: %d' % (threading.currentThread().getName(), cls.g_num))
-	      
-	    t1 = NewThread()
-	    t2 = NewThread()
-      
-	    t1.start()
-	    t2.start()
-    
+	      t1.start()
+	      t2.start()
+
 		  # 结果为
 		  Thread-1 was runing
-	  on the Thread-1 g_num: 1000000
+	      on the Thread-1 g_num: 1000000
 		  Thread-2 was runing
 		  on the Thread-2 g_num: 2000000
-	    ```
-	  
-	    
-	  
-	  * 死锁问题
-	  	当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
-	  
-	  * 死锁问题解决
-	  	* 设置超时时间`threading.Lock().acquire(timeout=3)`只要在上锁时设置超时时间`timeout=`，只要超过时间，线程就会不再等待是否解锁，而是直接运行。但是这种方式很危险，可能会带来大量的等待时间。
-	     	* 为每个锁添加一个特殊编号，多线程在获取锁的时候严格按照该编号的升序方式来获取，相当于为线程排序，这样就避免了多线程因为资源争抢，而陷入死锁的可能。	
-	     	* [银行家算法](https://zh.wikipedia.org/wiki/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95)
-	    
-	  * 独立全局变量
-	  
-	      多线程之间进行通信，但是又得使得两个线程之间的变量都具有独立性，每个线程从全局变量中得到的数据都不一样。
-	  
-	      三种方法 :
-	  
-	      * 传参
-	      * 字典
-	      * 特殊全局变量（`threading.local()`）
+	      ```	  
+		    	  
+		* 死锁问题
+
+		  当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
+		  
+		* 死锁问题解决
+
+		  * 设置超时时间`threading.Lock().acquire(timeout=3)`只要在上锁时设置超时时间`timeout=`，只要超过时间，线程就会不再等待是否解锁，而是直接运行。但是这种方式很危险，可能会带来大量的等待时间。
+		  * 为每个锁添加一个特殊编号，多线程在获取锁的时候严格按照该编号的升序方式来获取，相当于为线程排序，这样就避免了多线程因为资源争抢，而陷入死锁的可能。	
+		  * [银行家算法](https://zh.wikipedia.org/wiki/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95)
+		    
+		* 独立全局变量
+		  
+		    多线程之间进行通信，但是又得使得两个线程之间的变量都具有独立性，每个线程从全局变量中得到的数据都不一样。
+		  
+		    三种方法 :
+		  
+		    * 传参
+		    * 字典
+		    * 特殊全局变量（`threading.local()`）
 
 * 进程与线程的区别
-	* 线程和进程的执行顺序都是一样的，都是由操作系统的调度算法决定，不是根据程序的编写顺序来决定。 
-  *  进程是资源分配的单位，而线程是 CPU 调度的单位。
+  * 线程和进程的执行顺序都是一样的，都是由操作系统的调度算法决定，不是根据程序的编写顺序来决定。 
+  * 进程是资源分配的单位，而线程是 CPU 调度的单位。
   * 进程在主程序结束后，程序立马结束,需要手动利用`join()`方法使得主程序发生堵塞，来等待子进程。而主线程的任务结束后，程序会等待子线程结束才会结束。故不需要特意使用`join()`方法来使主线程等待子线程。
-   	* 多进程适合 CPU 密集型，多线程适合 I/O 密集型。
+  * 多进程适合 CPU 密集型，多线程适合 I/O 密集型。
 
 * 协程
+
 	* 概念
-		线程下的一种，也叫微线程，单线程自身控制切换任务时机，达到多任务的效果。避免了由于系统在处理多进程或者多线程时，切换任务时需要的等待时间。这一点很像操作系统里的中断。
+
+	  线程下的一种，也叫微线程，单线程自身控制切换任务时机，达到多任务的效果。避免了由于系统在处理多进程或者多线程时，切换任务时需要的等待时间。这一点很像操作系统里的中断。
 
 	* 实现方式
+
 		* 生成器（yield）
-			生成器相关内容可看问题 13。
-    
-      这里以一个简单的「生产者-消费者模型」来解释如何使用生成器实现协程。
 
-      示例：
-      
-      ```
-      import threading  
-      
-      
-      def producter(c):
-          next(c)
-          n = 4
-          print('%s was running' % threading.currentThread().getName())
-          while n:
-              print('product data: %d' % n)
-              res = c.send(n)
-              print(res)
-              n -= 1
-          print('sale out')
-          
-      def consumer():
-          res = ''
-        
-          print('%s was running' % threading.currentThread().getName())
-          while True:
-              n = yield res
-        
-              print('consume data: %d' % n)
-              res = '200 OK'
-        
-      print('%s was running' % threading.currentThread().getName())
-      c = consumer()
-        
-      producter(c)
-        
-      # 结果为
-      MainThread was running
-      MainThread was running
-      MainThread was running
-      product data: 4
-      consume data: 4
-      200 OK
-      product data: 3
-      consume data: 3
-      200 OK
-      product data: 2
-      consume data: 2
-      200 OK
-      product data: 1
-      consume data: 1
-      200 OK
-      sale out
-      ```
-
-      可以看到，生产者事先不知道消费者具体要消费多少数据，生产者只是一直在生产。而消费者则是利用生成器的中断特性，`consumer`函数中，程序每一次循环遇到`yield`关键字就会停下，等待`producter`函数启动生成器，再继续下一次循环。
+		  生成器相关内容可看问题 13。
     
-      在这中间只有一个线程在运行，任务的切换时机由程序员自己控制，避免了由于多线程之间的切换消耗，这样就简单实现了协程。
+	      这里以一个简单的「生产者-消费者模型」来解释如何使用生成器实现协程。
+
+      	  示例：
+      
+	      ```
+	      import threading  
+	      
+	      
+	      def producter(c):
+	          next(c)
+	          n = 4
+	          print('%s was running' % threading.currentThread().getName())
+	          while n:
+	              print('product data: %d' % n)
+	              res = c.send(n)
+	              print(res)
+	              n -= 1
+	          print('sale out')
+	          
+	      def consumer():
+	          res = ''
+	        
+	          print('%s was running' % threading.currentThread().getName())
+	          while True:
+	              n = yield res
+	        
+	              print('consume data: %d' % n)
+	              res = '200 OK'
+	        
+	      print('%s was running' % threading.currentThread().getName())
+	      c = consumer()
+	        
+	      producter(c)
+	        
+	      # 结果为
+	      MainThread was running
+	      MainThread was running
+	      MainThread was running
+	      product data: 4
+	      consume data: 4
+	      200 OK
+	      product data: 3
+	      consume data: 3
+	      200 OK
+	      product data: 2
+	      consume data: 2
+	      200 OK
+	      product data: 1
+	      consume data: 1
+	      200 OK
+	      sale out
+	      ```
+
+          可以看到，生产者事先不知道消费者具体要消费多少数据，生产者只是一直在生产。而消费者则是利用生成器的中断特性，`consumer`函数中，程序每一次循环遇到`yield`关键字就会停下，等待`producter`函数启动生成器，再继续下一次循环。
+    
+          在这中间只有一个线程在运行，任务的切换时机由程序员自己控制，避免了由于多线程之间的切换消耗，这样就简单实现了协程。
 
 		* 异步（asyncio）
-		    由于生成器在未来的 Python 3.10 版本中将不在支持协程，而是推荐使用`asyncio`库，该库适用于高并发。
+
+		  由于生成器在未来的 Python 3.10 版本中将不在支持协程，而是推荐使用`asyncio`库，该库适用于高并发。
     
-        自己目前不会，就不瞎 BB 了，具体可看文档。
+          自己目前不会，就不瞎 BB 了，具体可看文档。
     
-        [asyncio 中文文档](https://docs.python.org/zh-cn/3/library/asyncio-task.html)
+          [asyncio 中文文档](https://docs.python.org/zh-cn/3/library/asyncio-task.html)
 
 
 
