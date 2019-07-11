@@ -1150,5 +1150,167 @@ print(isinstance(123,Iterable))
           [asyncio 中文文档](https://docs.python.org/zh-cn/3/library/asyncio-task.html)
 
 
+---
+**第四次更新**
 
-*未更完，下一次补上*
+
+### 15.说一说 GIL
+
+前面有提到由于 Python 基于 C 语言编写的解释器中设置了一个 GIL 全局变量锁，该锁使得 Python 的多线程在处理 CPU 计算密集型任务时，同一时刻只能有一个线程在运行，这也是为什么说  Python 的多线程是一个「假性多线程」的原因。
+
+解决 GIL 的办法在处理 CPU 计算密集型任务时，使用多进程 + 协程，发挥计算机多核的威力，而处理 I/O 密集型，则可以使用多线程。
+
+### 16.说一说 Python 中的垃圾回收机制（GC）
+
+* 引用计数清零
+* 标记-清除
+* 隔代回收
+  这里有一篇文章可以参考一下。[垃圾回收机制](https://juejin.im/post/5b34b117f265da59a50b2fbe)
+
+### 17.说一说 Python 中的函数式编程
+
+* lambda
+
+  lambda 匿名函数，使用匿名函数可以帮助我们简化代码，且节省程序由于显示创建函数的消耗。
+
+  示例：
+
+  ```
+  # 冒号左边是参数， 右边是表达式，lambda 返回的是右边表达式的结果
+  L2 = lambda x : x * x
+  print(L2(5))
+  
+  # 结果为 25
+  ```
+
+* map
+
+  `map(func，*Iterable)`，map 函数通过将可迭代对象传入 func 函数，全部执行。
+
+  示例：
+
+  ```
+  # 相当于 [1*1, 2*2, 3*3, 4*4]
+  L2 = list(map(lambda x: x * x, range(1, 4)))
+  print(L2)
+  
+  # 结果为
+  [1, 4, 9, 16]
+  ```
+
+* reduce
+
+  `reduce(func， *sequence)`，reduce 函数可以将函数 func 迭代调用。
+
+  示例：
+
+  ```
+  from functools import reduce
+  
+  
+  # 相当于 (（1*2)*3)
+  L2 = reduce(lambda x， y: x * y, range(1, 4))
+  print(L2)
+  
+  # 结果为
+  6
+  ```
+
+* filter
+
+  filter(func，*Iterable)，filter 函数通过将可迭代对象当做参数传递给 func 函数，并返回 func 函数中返回结果为 True 的值。
+
+  示例：
+
+  ```
+  # 相当于 g = [x for x in range(10) if x < 3]
+  L2 = list(filter(lambda x: x < 3, range(10)))
+  print(L2)
+  
+  # 结果为
+  [0, 1, 2]
+  ```
+
+### 18.is 和 == 的区别
+
+* a is b 比较的是 a 和 b 的「id」是否相同
+* a == b 比较的是 a 和 b 的「值」是否相同
+
+### 19.range 和 xrange 的区别
+
+对于现如今的 Python 3.x，这个问题其实已经没有什么意义了，由于其在各大面经中都出现过，这里简单解释下。在 Python 2.x 中，`range`和`xrange`最大的区别就是`xrange`生成的不是一个`list`，而是一个生成器，这两者的区别在问题 13 已经讲过，这里不在赘述。
+
+Python 3.x 中已经移除了`range()`方法，并将`xrange()`方法更名为`range()`。
+
+### 20.新式类和旧式类的区别
+
+新式类和旧式类的变化主要讲的是 Python 中类的「继承」问题。
+
+旧式类中，类的继承按照「从左往右，深度优先遍历」的原则。
+
+新式类中，类的继承按照「C3 算法」的原则：如果子类在继承来自不同父类的方法是不一样的时候，会从下而上，先左后右的合并继承方法。如果有一样的方法，则会继承第一个方法然后舍弃另一个相同的方法，接着合并其他不同的方法。解决了旧式类继承中存在的二义性和单调性。
+
+示例：
+
+```
+# 新式类
+
+class B:
+    def __init__(self,name):
+        self.name = name
+
+    def get_name(self):
+        return 'B'
+
+class C:
+    def __init__(self,name):
+        self.name = name
+
+    def get_name(self):
+        return 'C'
+
+class BC(B, C):
+    pass
+
+b = B('B')
+c = C('C')
+bc = BC('C')
+
+print(bc.name)
+name = bc.get_name()
+print(name)
+
+# 查看 c 在搜索方法时的先后顺序
+print(bc.__mro__)
+
+# 结果为
+C
+B
+(<class '__main__.BC'>, <class '__main__.B'>, <class '__main__.C'>, <class 'object'>)
+```
+
+另外，新式类相对于旧式类还多了这么些变化。
+
+* `__slot__`：限制实例属性的设置范围。
+
+* `__getattrbute__`：获取实例属性值。
+
+* `type`与`__class__`：返回类型统一。
+
+    
+
+    
+
+------
+
+*至此，有关 Python 知识点的面试题就已告一段落，下次更新数据库（MySQL，Redis）方面面试题。*
+
+*所有内容均已上传至「GitHub」仓库，欢迎大家[点击原文](https://github.com/Senglin75/interview_of_python.git)查阅。*
+
+*欢迎大家关注个人微信公众号「PythonDeveloper」，所有内容第一时间更新于公众号。*
+
+*所有内容均为本人一点一点敲出来的，难免会有错字、语句不通顺的地方，欢迎大家指正。*
+
+*所有示例均已在 Python 3.5 环境下测试通过，如有出错地方，还请检查自身 Python 版本。*
+
+*因本人水平有限，文章内容难免会有出错，欢迎大家评论指出，一起进步。*
