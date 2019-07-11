@@ -1307,7 +1307,7 @@ B
 
 *所有内容均已上传至「GitHub」仓库，欢迎大家[点击原文](https://github.com/Senglin75/interview_of_python.git)查阅。*
 
-*欢迎大家关注个人微信公众号「PythonDeveloper」，所有内容第一时间更新于公众号。*
+*欢迎大家关注个人微信公众号「**PythonDeveloper**」，所有内容**第一时间更新于公众号**。*
 
 *所有内容均为本人一点一点敲出来的，难免会有错字、语句不通顺的地方，欢迎大家指正。*
 
