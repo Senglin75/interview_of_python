@@ -608,7 +608,7 @@ print(isinstance(123,Iterable))
 		  main_pid: 12775
 		  res：12776
 		  res: 0
-		  sub_pid: 12776multiprocessing.Process
+		  sub_pid: 12776
 		  ```
 
 		* multiprocessing.Process
