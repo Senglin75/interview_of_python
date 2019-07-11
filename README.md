@@ -584,8 +584,9 @@ print(isinstance(123,Iterable))
 	* 实现方式
 		* fork()
 
-			示例：
-			```
+		  示例：
+		
+		  ```
 		  import os
 		        
 		        
@@ -609,12 +610,15 @@ print(isinstance(123,Iterable))
 		  res：12776
 		  res: 0
 		  sub_pid: 12776
-		  ```
-
+  ```
+		
+  
+		
 		* multiprocessing.Process
-
-			示例：
-		    ```
+		
+		  示例：
+		
+		  ```
 		  from multiprocessing import Process
 		  import os, time
 		    
@@ -632,57 +636,65 @@ print(isinstance(123,Iterable))
 		  np = NewProcess()
 		  np.start()
 		    
-		  # 结果为
+  # 结果为
 		  man_process pid : 7846
 		  7847 process was runing
-		    ```
-
+  ```
+		
+		  
+		
 		* multiprocessing.Pool
 			* 同步（apply）
-
-				示例：
-		        from multiprocessing import Pool
-		        import time, os, random  
-		        
-		        
-		        print('main_process pid: %d' % os.getpid())
-		        
-		        def run():
-		            time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
-		            print('%d process was runing' % os.getpid())
-		        
-		        p = Pool(3)
-		        
-		        for i in range(4):
-		            p.apply(run, args=())
-		        
-		        p.close()
-		        print('waiting for sub_process')
-		        
-		        while True:
-		            # 获取 Pool 中剩余的进程数量
-		            count = len(p._cache)
-		            if count != 0:
-		                print('there was %d sub_process' % count)
-		                time.sleep(random.random())
-		            else:
-		                break
-		                
-		        print('sub_process has done')
-		        
-		        # 结果为
-		        main_process pid: 4295
-		        4297 process was runing
-		        4296 process was runing
-		        4298 process was runing
-		        4297 process was runing
-		        wating for sub_process
-		        sub_process has done
+		
+			  示例：
+		  
+		    ```
+		    from multiprocessing import Pool
+		    import time, os, random  
 		    
-		  * 异步（apply_async)
-
+		    
+		    print('main_process pid: %d' % os.getpid())
+		    
+		    def run():
+		        time.sleep(random.random())  # random.random() 随机生成一个小于 1 的浮点数
+		        print('%d process was runing' % os.getpid())
+		    
+		    p = Pool(3)
+		    
+		    for i in range(4):
+		        p.apply(run, args=())
+		    
+		    p.close()
+		    print('waiting for sub_process')
+		    
+		    while True:
+		        # 获取 Pool 中剩余的进程数量
+		        count = len(p._cache)
+		        if count != 0:
+		            print('there was %d sub_process' % count)
+		            time.sleep(random.random())
+		        else:
+		            break
+		            
+		    print('sub_process has done')
+		    
+		    # 结果为
+		    main_process pid: 4295
+    4297 process was runing
+		    4296 process was runing
+    4298 process was runing
+		    4297 process was runing
+		    wating for sub_process
+		    sub_process has done
+		  ```
+			
+		  
+			
+			* 异步（apply_async)
+			
 				示例：
-    ```
+			  
+			  ```
 			  from multiprocessing import Pool
 			  import time, os, random
 			      
@@ -690,53 +702,56 @@ print(isinstance(123,Iterable))
 			  print('main_process pid: %d' % os.getpid())
 			      
 			  def run():
-			    	# random.random() 随机生成一个小于 1 的浮点数
+		      	# random.random() 随机生成一个小于 1 的浮点数
 			      time.sleep(random.random())  
 			      print('%d process was runing' % os.getpid())
 			    
 			  p = Pool(3)
 			      
-		    for i in range(4):
+			  for i in range(4):
 			      p.apply_async(run, args=())
 			      
 			  p.close()
 			      
-			  while True:
+		    while True:
 			      # 获取 Pool 中剩余的进程数量
 			      count = len(p._cache)
 			      if count != 0:
-			          print('there was %d sub_process' % count)
+	  	          print('there was %d sub_process' % count)
 			          time.sleep(random.random())
-		        else:
-			          break
+			      else:
+	  	          break
 			              
 			  print('wiating for sub_process..')
-			  p.join()
-			      
+		    p.join()
+	  	      
 			  print('sub_process has done')
-			      
+		        
 			  # 结果为
-			  main_process pid: 4342
-	      wiating for sub_process..
-			  there was 4 sub_process
+	  main_process pid: 4342
+			  wiating for sub_process..
+		    there was 4 sub_process
 			  4344 process was runing
-	      there was 3 sub_process
-			  4345 process was runing
+			  there was 3 sub_process
+		  4345 process was runing
 			  4344 process was runing
 			  4343 process was runing
-	      sub_process has done
-			    ```
+		  sub_process has done
+			  ```
+			  
+			  
 		
 	* 优缺点
-	* `fork()`是计算机最底层的进程实现方式，一个`fork()`方法创建出来的进程有两个：主进程、子进程。`fork()`创建出来的进程，主进程不会等待子进程。
+		* `fork()`是计算机最底层的进程实现方式，一个`fork()`方法创建出来的进程有两个：主进程、子进程。`fork()`创建出来的进程，主进程不会等待子进程。
 		* `multiprocessing`模块通过将`fork`方法封装成一个`Process`类，该类有一个`start()`方法，当调用该方法时，会自动调用`run()`方法，开启一个进程。并且由`Process`创建出来的进程，可以使用`join()`方法，使得主进程堵塞，被迫等待子进程。
 		* `multiprocess`下另一种开启进程的方式是通过`Pool`进程池来实现。进程池可以开启多个进程来执行多个任务，但是进程数最大不会超过系统 CPU 核数。同样的，由`Pool`创建出来的进程，主进程也不会等待子进程，通过`join()`方法可以迫使主进程等待子进程，或者使用`apply()`同步的方式。
 	
 	* 进程通信
-	进程之间的通信可以通过队列（Queue）来进行，多个进程一部分向队列里写入数据，一部分从队列里读取数据，从而完成多进程之间的通信问题。
+		进程之间的通信可以通过队列（Queue）来进行，多个进程一部分向队列里写入数据，一部分从队列里读取数据，从而完成多进程之间的通信问题。
 	
 		示例：
-	```
+		
+	  ```
 	  from multiprocessing import Process, Queue
 	  import random, time, os
 	  
@@ -749,20 +764,20 @@ print(isinstance(123,Iterable))
 	              time.sleep(random.random())
 	      else:
 	          print('queue is full')
-	  
+		
 		def read(q):
 		    # 等待队列被写入数据
 		    time.sleep(random.random())
 		    while True:
 		        if not q.empty():
 		            data = q.get()
-		            print('%d was reading data{%d} from queue' % (os.getpid(), data))
-	          else:
+	              print('%d was reading data{%d} from queue' % (os.getpid(), data))
+		        else:
 		             print('queue is empty')
 		             break
 		  
-		# 创建通信队列,进程之间,全局变量不共享
-	  q = Queue()
+	  # 创建通信队列,进程之间,全局变量不共享
+		q = Queue()
 		pw = Process(target=write, args=(q,))
 		pr = Process(target=read, args=(q,))
 		  
@@ -773,26 +788,26 @@ print(isinstance(123,Iterable))
 		pr.join()
 		print('end')
 		  
-		# 结果为
+	# 结果为
 		4640 was writing data[0] to queue
-		4640 was writing data[1] to queue
+	4640 was writing data[1] to queue
 		4640 was writing data[2] to queue
-		4641 was reading data{0} from queue
+	4641 was reading data{0} from queue
 		4641 was reading data{1} from queue
 		4641 was reading data{2} from queue
 		queue is empty
 		4640 was writing data[3] to queue
 		end
-		```
-	  
-		由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
-	
+	  ```
+		
+	由于进程的执行顺序问题，造成了 pr 先于 pw 执行，所以 pr 未读取到数据，pr 进程任务结束，堵塞解开，主进程继续向下运行，最后 pw 任务结束。
+		
 	* 进程通信改良
-
+	
 		示例：
-
-	    ```
-  from multiprocessing import Process, Queue
+	
+	  ```
+	  from multiprocessing import Process, Queue
 	  import random, time, os
 	  
 	  
@@ -835,7 +850,10 @@ print(isinstance(123,Iterable))
 	  12898 was writing data[3] to queue
 	  12899 was reading data{3} from queue
 	  end
-	    ```
+	  ```
+	  
+	  
+	  
 * 线程
 	* 概念
 		线程是进程下的一部分，进程下负责执行代码程序的就是线程，一个进程下会有很多个线程。同样的，一个主线程下面也有很多子线程。
@@ -844,8 +862,9 @@ print(isinstance(123,Iterable))
 
 	* 实现方式
 
-		示例：
-		```
+	  示例：
+	
+	  ```
 	  import threading, time
 	  
 	  
@@ -871,24 +890,27 @@ print(isinstance(123,Iterable))
 	  main_thread tid: 140427132020480
 	  <Thread(Thread-1, started 140427100555008)> was runing
 	  current thread'name: Thread-1
-	  ```
-
-	* 线程通信
+  ```
+	
+	  
+	
+* 线程通信
 		* 通信队列
-			通信队列作为相对来说最为安全的线程通信手段，其中`Queue`模块自身拥有所有所需的锁，这使得通信队列中的对象可以安全的在多线程之间共享。
-
+		通信队列作为相对来说最为安全的线程通信手段，其中`Queue`模块自身拥有所有所需的锁，这使得通信队列中的对象可以安全的在多线程之间共享。
+	
 			这里用常见的「生产者-消费者模型」来介绍。
-
+	
 			示例：
-			```
+			
+	    ```
 	    import threading, queue, time, random
 	    
 	    
-	    flag = object()
+      flag = object()
 	        
 	    def producter(q):
 	        for i in range(4):
-              q.put(i)
+	            q.put(i)
 	            print('%s put data{%d} in queue' % (threading.currentThread().getName(), i))
 	            time.sleep(random.random())
 	            
@@ -919,20 +941,21 @@ print(isinstance(123,Iterable))
 	    Thread-1 put data{1} in queue
 	    Thread-2 get data{0} from queue
 	    Thread-2 get data{1} from queue
-	    Thread-1 put data{2} in queue
+    Thread-1 put data{2} in queue
 	    Thread-2 get data{2} from queue
-	    Thread-1 put data{3} in queue
-	    Thread-2 get data{3} from queue
-end
-	    ```
-
-			这里有一个细节。在多线程下，当生产者任务完成之后，向队列`queue`里添加了一个特殊对象（终止信号）`flag`，这样当消费者从`queue`中取出任务时，当取到`flag`时，意味着所有任务被取出，并再次将`flag`添加至`queue`中，这样其他线程中的消费者在接收到这个终止信号后，也会得知当前生产者任务已经全部发布。
+    Thread-1 put data{3} in queue
+	Thread-2 get data{3} from queue
+	    end
+```
 			
-* 轮询
+			这里有一个细节。在多线程下，当生产者任务完成之后，向队列`queue`里添加了一个特殊对象（终止信号）`flag`，这样当消费者从`queue`中取出任务时，当取到`flag`时，意味着所有任务被取出，并再次将`flag`添加至`queue`中，这样其他线程中的消费者在接收到这个终止信号后，也会得知当前生产者任务已经全部发布。
+		
+		* 轮询
 			通过为数据操作添加`while`循环判断，迫使线程被迫等待操作。（为了优化等待时间，应在最核心的位置添加判断条件）
 		
 			示例：
-			```
+			
+		  ```
 		  import threading
 		    
 		    
@@ -968,21 +991,24 @@ end
 		    
 		  t1.start()
 		  t2.start()
-		    
+	    
 		  # 结果为
 		  Thread-1 was runing
-		  Thread-2 was runing
+  Thread-2 was runing
 		  on the Thread-1, g_num: 1000000
-  on the Thread-2, g_num: 2000000
-		  ```
+	  on the Thread-2, g_num: 2000000
+	```
+			
 		
-* 互斥锁
-			互斥锁是专门为了针对线程安全而设计的一种结构，锁可以强制线程排序，保护线程安全，但是加锁、解锁会消耗系统 CPU 资源。
-
-		* 互斥锁优化
-		
-	  	示例：
-	  	```
+			
+		* 互斥锁
+	  	互斥锁是专门为了针对线程安全而设计的一种结构，锁可以强制线程排序，保护线程安全，但是加锁、解锁会消耗系统 CPU 资源。
+	  
+	  * 互斥锁优化
+	  
+	    示例：
+	  
+	    ```
 	    import threading
 	      
 	      
@@ -1008,20 +1034,22 @@ end
 	      
 	    t1 = NewThread()
 	    t2 = NewThread()
-	      
+      
 	    t1.start()
 	    t2.start()
-	      
-	    # 结果为
-	    Thread-1 was runing
-	    on the Thread-1 g_num: 1000000
-	    Thread-2 was runing
-  on the Thread-2 g_num: 2000000
-		  ```
-		
-* 死锁问题
-			当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
-		
+    
+		  # 结果为
+		  Thread-1 was runing
+	  on the Thread-1 g_num: 1000000
+		  Thread-2 was runing
+		  on the Thread-2 g_num: 2000000
+	    ```
+	  
+	    
+	  
+	  * 死锁问题
+	  	当多线程下出现多个锁，判断条件又是另一个线程里的锁时，就会出现一种情况：当另一个线程任务执行时间过长，或是线程结束，未解锁。当前线程由于迟迟无法上锁，程序始终阻塞，此时就会陷入死锁问题。
+	  
 	  * 死锁问题解决
 	  	* 设置超时时间`threading.Lock().acquire(timeout=3)`只要在上锁时设置超时时间`timeout=`，只要超过时间，线程就会不再等待是否解锁，而是直接运行。但是这种方式很危险，可能会带来大量的等待时间。
 	     	* 为每个锁添加一个特殊编号，多线程在获取锁的时候严格按照该编号的升序方式来获取，相当于为线程排序，这样就避免了多线程因为资源争抢，而陷入死锁的可能。	
